@@ -20,7 +20,7 @@ class BlogBloc extends Bloc<BlogEvent,BlogState>{
     emit(BlogLoading());
     try{
       final blogs = await _apiService.fetchBlogs();
-      final favoritesSnapShot = await _firestore.collection('favorites').get();
+      final favoritesSnapShot = await _firestore.collection('favorites').get(GetOptions(source: Source.cache));
       final favorites = favoritesSnapShot.docs.map((doc)=>doc.id).toSet();
 
       final updatedBlogs = blogs.map((blog)=>blog.copyWith(

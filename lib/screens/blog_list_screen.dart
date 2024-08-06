@@ -15,7 +15,9 @@ class BlogListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Blog Explorer'),
+          title:
+              Text('SubSpace', style: TextStyle(fontWeight: FontWeight.bold,color: Colors. blueGrey)),
+          backgroundColor: Colors.black,
         ),
         body: BlocBuilder<BlogBloc, BlogState>(
           builder: (context, state) {
@@ -25,10 +27,12 @@ class BlogListScreen extends StatelessWidget {
             } else if (state is BlogLoading) {
               return Center(child: CircularProgressIndicator());
             } else if (state is BlogLoaded) {
-              return ListView.builder(itemBuilder: (context, index) {
-                final blog = state.blogs[index];
-                return BlogListItem(blog: blog);
-              });
+              return ListView.builder(
+                  itemCount: state.blogs.length,
+                  itemBuilder: (context, index) {
+                    final blog = state.blogs[index];
+                    return BlogCard(blog: blog);
+                  });
             } else if (state is BlogError) {
               return Center(child: Text(state.message));
             }
@@ -38,35 +42,59 @@ class BlogListScreen extends StatelessWidget {
   }
 }
 
-class BlogListItem extends StatelessWidget {
+class BlogCard extends StatelessWidget {
   final Blog blog;
 
-  const BlogListItem({Key? key, required this.blog}) : super(key: key);
+  const BlogCard({Key? key, required this.blog}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(blog.imageUrl),
-      ),
-      title: Text(blog.title),
-      trailing: IconButton(
-        icon: Icon(
-          blog.isFavorite ? Icons.favorite : Icons.favorite_border,
-          color: blog.isFavorite ? Colors.red : null,
-        ),
-        onPressed: () {
-          BlocProvider.of<BlogBloc>(context).add(ToggleFavorite(blog));
-        },
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BlogDetailScreen(blog: blog,),
+    return Card(
+      margin: EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+            child: Image.network(
+              blog.imageUrl,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
           ),
-        );
-      },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              blog.title,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                child: Text('READ MORE'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlogDetailScreen(blog: blog),
+                      ));
+                },
+              ),
+              IconButton(
+                  onPressed: () {
+                    BlocProvider.of<BlogBloc>(context).add(ToggleFavorite(blog));
+                  },
+                  icon: Icon(
+                    blog.isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: blog.isFavorite ? Colors.red : null,
+                  ))
+            ],
+          )
+        ],
+      ),
     );
   }
 }
