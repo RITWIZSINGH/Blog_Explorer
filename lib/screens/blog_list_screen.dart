@@ -7,6 +7,7 @@ import 'package:blog_explorer/blocs/blog_state.dart';
 import 'package:blog_explorer/blocs/blog_event.dart';
 import 'blog_detail_screen.dart';
 import 'package:blog_explorer/models/blog.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class BlogListScreen extends StatelessWidget {
   const BlogListScreen({super.key});
@@ -15,8 +16,9 @@ class BlogListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title:
-              Text('SubSpace', style: TextStyle(fontWeight: FontWeight.bold,color: Colors. blueGrey)),
+          title: Text('SubSpace',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.blueGrey)),
           backgroundColor: Colors.black,
         ),
         body: BlocBuilder<BlogBloc, BlogState>(
@@ -27,12 +29,22 @@ class BlogListScreen extends StatelessWidget {
             } else if (state is BlogLoading) {
               return Center(child: CircularProgressIndicator());
             } else if (state is BlogLoaded) {
-              return ListView.builder(
-                  itemCount: state.blogs.length,
-                  itemBuilder: (context, index) {
-                    final blog = state.blogs[index];
-                    return BlogCard(blog: blog);
-                  });
+              return AnimationLimiter(
+                child: ListView.builder(
+                    itemCount: state.blogs.length,
+                    itemBuilder: (context, index) {
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        duration: Duration(milliseconds: 375),
+                        child: SlideAnimation(
+                          verticalOffset: 50.0,
+                          child: FadeInAnimation(
+                            child: BlogCard(blog: state.blogs[index]),
+                          ),
+                        ),
+                      );
+                    }),
+              );
             } else if (state is BlogError) {
               return Center(child: Text(state.message));
             }
@@ -78,19 +90,36 @@ class BlogCard extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => BlogDetailScreen(blog: blog),
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) => BlogDetailScreen(blog: blog),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          var begin = Offset(1.0, 0.0);
+                          var end = Offset.zero;
+                          var curve = Curves.ease;
+                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                          return SlideTransition(
+                            position: animation.drive(tween),
+                            child: child,
+                          );
+                        },
                       ));
                 },
               ),
-              IconButton(
-                  onPressed: () {
-                    BlocProvider.of<BlogBloc>(context).add(ToggleFavorite(blog));
-                  },
-                  icon: Icon(
-                    blog.isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: blog.isFavorite ? Colors.red : null,
-                  ))
+              AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation){
+                  return ScaleTransition(scale: animation, child: child);
+                },
+                child: IconButton(
+                    key: ValueKey<bool>(blog.isFavorite),
+                    onPressed: () {
+                      BlocProvider.of<BlogBloc>(context).add(ToggleFavorite(blog));
+                    },
+                    icon: Icon(
+                      blog.isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: blog.isFavorite ? Colors.red : null,
+                    )),
+              )
             ],
           )
         ],
