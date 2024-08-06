@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1025134458145",
+    "project_id": "blog-explorer-d7580",
+    "storage_bucket": "blog-explorer-d7580.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025134458145:android:ca7d64dc38cd67fc563a60",
+        "android_client_info": {
+          "package_name": "com.example.blog_explorer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbKKrwND7HZwuvRNxFqTGf7QJMsMKbsp0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

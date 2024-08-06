@@ -12,11 +12,13 @@ import 'package:blog_explorer/services/api_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+      name: "blog-explorer-d7580" ,
       options: FirebaseOptions(
           apiKey: "AIzaSyCtDYpUPqSN1Vuh4C5zkG4vFNK3WXbJK1U",
           appId: "1:1025134458145:web:aeca5a8c448e0a4f563a60",
           messagingSenderId: "1025134458145",
-          projectId: "blog-explorer-d7580"));       
+          projectId: "blog-explorer-d7580"));
+          FirebaseFirestore.instance.settings = Settings(persistenceEnabled: true);       
   runApp(MyApp());
 }
 

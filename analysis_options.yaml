@@ -9,6 +9,7 @@
 # packages, and plugins designed to encourage good coding practices.
 analyzer:
   errors:
+    await_only_futures: ignore
     empty_catches: ignore 
     prefer_const_constructors: ignore
     unused_import: ignore
