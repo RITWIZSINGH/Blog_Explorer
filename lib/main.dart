@@ -16,7 +16,7 @@ Future<void> main() async {
           apiKey: "AIzaSyCtDYpUPqSN1Vuh4C5zkG4vFNK3WXbJK1U",
           appId: "1:1025134458145:web:aeca5a8c448e0a4f563a60",
           messagingSenderId: "1025134458145",
-          projectId: "blog-explorer-d7580"));
+          projectId: "blog-explorer-d7580"));       
   runApp(MyApp());
 }
 
