@@ -24,7 +24,7 @@ class BlogListScreen extends StatelessWidget {
         body: BlocBuilder<BlogBloc, BlogState>(
           builder: (context, state) {
             if (state is BlogInitial) {
-              BlocProvider.of<BlogBloc>(context).add(FectBlogs());
+              BlocProvider.of<BlogBloc>(context).add(FetchBlogs());
               return Center(child: CircularProgressIndicator());
             } else if (state is BlogLoading) {
               return Center(child: CircularProgressIndicator());

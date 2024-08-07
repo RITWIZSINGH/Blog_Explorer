@@ -12,6 +12,7 @@ analyzer:
     await_only_futures: ignore
     empty_catches: ignore 
     prefer_const_constructors: ignore
+    unnecessary_this: ignore
     unused_import: ignore
     unused_local_variable: ignore
     use_key_in_widget_constructors: ignore
