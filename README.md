@@ -1,3 +1,14 @@
+You should place the provided link under the "APK Download" section in the README file. Here is how the updated section would look:
+
+## APK Download
+
+You can download the APK for the Blog Explorer app from the following link:
+
+[Download APK](https://drive.google.com/file/d/1pPv-jRYqSS3piuj8afgcbtMVgoPDaJDn/view?usp=sharing)
+
+Here is the complete README file with the link included:
+
+```markdown
 # Blog Explorer App
 
 ## Overview
@@ -107,3 +118,4 @@ This project is licensed under the MIT License.
 ---
 
 If you encounter any issues or have any questions, feel free to open an issue on GitHub. Happy coding!
+```
