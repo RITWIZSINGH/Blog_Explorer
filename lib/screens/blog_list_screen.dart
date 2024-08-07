@@ -8,6 +8,7 @@ import 'package:blog_explorer/blocs/blog_event.dart';
 import 'blog_detail_screen.dart';
 import 'package:blog_explorer/models/blog.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class BlogListScreen extends StatelessWidget {
   const BlogListScreen({super.key});
@@ -68,11 +69,13 @@ class BlogCard extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-            child: Image.network(
-              blog.imageUrl,
+            child: CachedNetworkImage(
+              imageUrl: blog.imageUrl,
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
+              placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ),
           Padding(

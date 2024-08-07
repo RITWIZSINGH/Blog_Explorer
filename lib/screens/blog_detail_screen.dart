@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_explorer/models/blog.dart';
 
@@ -21,11 +22,13 @@ class BlogDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(
-                blog.imageUrl,
+              CachedNetworkImage(
+                imageUrl: blog.imageUrl,
                 width: double.infinity,
                 height: 200,
                 fit: BoxFit.cover,
+                placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
