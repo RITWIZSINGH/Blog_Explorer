@@ -76,7 +76,7 @@ flutter run
 
 You can download the APK for the Blog Explorer app from the following link:
 
-[Download APK](#https://drive.google.com/file/d/1pPv-jRYqSS3piuj8afgcbtMVgoPDaJDn/view?usp=sharing)
+[Download APK](https://drive.google.com/file/d/1pPv-jRYqSS3piuj8afgcbtMVgoPDaJDn/view?usp=sharing)
 
 ## Project Structure
 
