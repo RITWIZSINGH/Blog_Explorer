@@ -1,5 +1,4 @@
-// ignore_for_file: use_super_parameters
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:blog_explorer/blocs/blog_bloc.dart';
@@ -10,55 +9,81 @@ import 'package:blog_explorer/models/blog.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class BlogListScreen extends StatelessWidget {
+class BlogListScreen extends StatefulWidget {
   const BlogListScreen({super.key});
+
+  @override
+  _BlogListScreenState createState() => _BlogListScreenState();
+}
+
+class _BlogListScreenState extends State<BlogListScreen> {
+  bool _isOnline = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkConnectivity();
+  }
+
+  void _checkConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _isOnline = false;
+      });
+    } else {
+      setState(() {
+        _isOnline = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('SubSpace',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.blueGrey)),
-          backgroundColor: Colors.black,
-        ),
-        body: BlocBuilder<BlogBloc, BlogState>(
-          builder: (context, state) {
-            if (state is BlogInitial) {
-              BlocProvider.of<BlogBloc>(context).add(FetchBlogs());
-              return Center(child: CircularProgressIndicator());
-            } else if (state is BlogLoading) {
-              return Center(child: CircularProgressIndicator());
-            } else if (state is BlogLoaded) {
-              return AnimationLimiter(
-                child: ListView.builder(
-                    itemCount: state.blogs.length,
-                    itemBuilder: (context, index) {
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: Duration(milliseconds: 375),
-                        child: SlideAnimation(
-                          verticalOffset: 50.0,
-                          child: FadeInAnimation(
-                            child: BlogCard(blog: state.blogs[index]),
-                          ),
+      appBar: AppBar(
+        title: Text('SubSpace',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey)),
+        backgroundColor: Colors.black,
+      ),
+      body: BlocBuilder<BlogBloc, BlogState>(
+        builder: (context, state) {
+          if (state is BlogInitial) {
+            BlocProvider.of<BlogBloc>(context).add(FetchBlogs());
+            return Center(child: CircularProgressIndicator());
+          } else if (state is BlogLoading) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is BlogLoaded) {
+            return AnimationLimiter(
+              child: ListView.builder(
+                  itemCount: state.blogs.length,
+                  itemBuilder: (context, index) {
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: Duration(milliseconds: 375),
+                      child: SlideAnimation(
+                        verticalOffset: 50.0,
+                        child: FadeInAnimation(
+                          child: BlogCard(blog: state.blogs[index], isOnline: _isOnline),
                         ),
-                      );
-                    }),
-              );
-            } else if (state is BlogError) {
-              return Center(child: Text(state.message));
-            }
-            return Container();
-          },
-        ));
+                      ),
+                    );
+                  }),
+            );
+          } else if (state is BlogError) {
+            return Center(child: Text(state.message));
+          }
+          return Container();
+        },
+      ));
   }
 }
 
 class BlogCard extends StatelessWidget {
   final Blog blog;
+  final bool isOnline;
 
-  const BlogCard({Key? key, required this.blog}) : super(key: key);
+  const BlogCard({Key? key, required this.blog, required this.isOnline}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -108,21 +133,22 @@ class BlogCard extends StatelessWidget {
                       ));
                 },
               ),
-              AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
-                transitionBuilder: (Widget child, Animation<double> animation){
-                  return ScaleTransition(scale: animation, child: child);
-                },
-                child: IconButton(
-                    key: ValueKey<bool>(blog.isFavorite),
-                    onPressed: () {
-                      BlocProvider.of<BlogBloc>(context).add(ToggleFavorite(blog));
-                    },
-                    icon: Icon(
-                      blog.isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: blog.isFavorite ? Colors.red : null,
-                    )),
-              )
+              isOnline ?
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: IconButton(
+                      key: ValueKey<bool>(blog.isFavorite),
+                      onPressed: () {
+                        BlocProvider.of<BlogBloc>(context).add(ToggleFavorite(blog));
+                      },
+                      icon: Icon(
+                        blog.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: blog.isFavorite ? Colors.red : null,
+                      )),
+                ) : Container()
             ],
           )
         ],

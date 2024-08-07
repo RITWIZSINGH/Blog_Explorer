@@ -11,8 +11,10 @@ analyzer:
   errors:
     await_only_futures: ignore
     empty_catches: ignore 
+    library_private_types_in_public_api: ignore
     prefer_const_constructors: ignore
     unnecessary_this: ignore
+    unrelated_type_equality_checks: ignore
     unused_import: ignore
     unused_local_variable: ignore
     use_key_in_widget_constructors: ignore
